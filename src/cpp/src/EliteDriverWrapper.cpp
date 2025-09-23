@@ -270,6 +270,15 @@ static void bindEliteDriverClass(py::module_& m) {
 
                 Returns:
                     bool : True if success
+            )doc")
+        .def("registerRobotExceptionCallback", &EliteDriver::registerRobotExceptionCallback, py::arg("cb"),
+             R"doc(
+                Registers a callback for robot exceptions.
+
+                This function registers a callback that will be invoked whenever a robot exception message is received from the primary port.
+
+                Args:
+                    cb (Callable[[RobotException], None]): A callback function that takes a RobotException representing the received exception.
             )doc");
 }
 
