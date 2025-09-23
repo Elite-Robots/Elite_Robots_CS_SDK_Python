@@ -1,0 +1,57 @@
+cmake_minimum_required(VERSION 3.14)
+project(elite_cs_sdk_python LANGUAGES CXX)
+
+include(FetchContent)
+FetchContent_Declare(
+  pybind11
+  GIT_REPOSITORY https://github.com/pybind/pybind11.git
+  GIT_TAG stable
+)
+FetchContent_MakeAvailable(pybind11)
+
+FetchContent_Declare(
+  elite_cs_sdk
+  GIT_REPOSITORY https://github.com/Elite-Robots/Elite_Robots_CS_SDK.git
+  GIT_TAG main
+)
+FetchContent_MakeAvailable(elite_cs_sdk)
+
+set(ELITE_SDK_SRC_DIR ${elite_cs_sdk_SOURCE_DIR} PARENT_SCOPE)
+
+file(GLOB_RECURSE BINDING_CPP_SOURCES
+  CONFIGURE_DEPENDS
+  "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
+)
+
+file(GLOB_RECURSE BINDING_HEADERS
+  CONFIGURE_DEPENDS
+  "${CMAKE_CURRENT_SOURCE_DIR}/src/*.hpp"
+)
+
+set(BINDING_SOURCES
+  ${BINDING_CPP_SOURCES}
+  ${BINDING_HEADERS}
+)
+
+pybind11_add_module(elite_cs_sdk_python
+  ${BINDING_SOURCES}
+)
+
+target_link_libraries(elite_cs_sdk_python PRIVATE elite-cs-series-sdk_SHARED)
+
+add_dependencies(elite_cs_sdk_python elite-cs-series-sdk_SHARED)
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  set(ELITE_PY_SDK_SUFFIX ".pyd")
+else()
+  set(ELITE_PY_SDK_SUFFIX ".so")
+endif()
+
+set_target_properties(elite_cs_sdk_python PROPERTIES
+  CXX_STANDARD 17
+  CXX_STANDARD_REQUIRED YES
+  BUILD_WITH_INSTALL_RPATH TRUE
+  INSTALL_RPATH "$ORIGIN"
+  OUTPUT_NAME "elite_cs_sdk_python"
+  SUFFIX "${ELITE_PY_SDK_SUFFIX}"
+)
