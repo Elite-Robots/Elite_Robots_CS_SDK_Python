@@ -1,8 +1,4 @@
-from elite_cs_sdk.elite_driver import EliteDriver, EliteDriverConfig
-from elite_cs_sdk.data_type import *
-from elite_cs_sdk.log import *
-from elite_cs_sdk.dashboard_client import DashboardClientInterface
-from elite_cs_sdk.rt_utils import *
+import elite_cs_sdk as cs
 import inspect
 import os
 import argparse
@@ -61,29 +57,29 @@ def main():
     """
     Dashboard connect and enable robot
     """
-    dashboard = DashboardClientInterface()
+    dashboard = cs.DashboardClientInterface()
     # Connect dashboard
-    logInfoMessage(currentFile(), currentLine(), "Connecting to the dashboard...")
+    cs.logInfoMessage(currentFile(), currentLine(), "Connecting to the dashboard...")
     if not dashboard.connect(ip):
-        logFatalMessage(currentFile(), currentLine(), "Failed to connect to the dashboard.")
+        cs.logFatalMessage(currentFile(), currentLine(), "Failed to connect to the dashboard.")
         sys.exit(1)
-    logInfoMessage(currentFile(), currentLine(), "Successfully connected to the dashboard")
+    cs.logInfoMessage(currentFile(), currentLine(), "Successfully connected to the dashboard")
     
     # Power on
-    logInfoMessage(currentFile(), currentLine(), "Start powering on...")
+    cs.logInfoMessage(currentFile(), currentLine(), "Start powering on...")
     if not dashboard.powerOn():
-        logFatalMessage(currentFile(), currentLine(), "Power-on failed.")
+        cs.logFatalMessage(currentFile(), currentLine(), "Power-on failed.")
         sys.exit(1)
-    logInfoMessage(currentFile(), currentLine(), "Power-on failed")
+    cs.logInfoMessage(currentFile(), currentLine(), "Power-on failed")
 
     # Brake release
-    logInfoMessage(currentFile(), currentLine(), "Start releasing brake...")
+    cs.logInfoMessage(currentFile(), currentLine(), "Start releasing brake...")
     if not dashboard.brakeRelease():
-        logFatalMessage(currentFile(), currentLine(), "Release brake fail")
+        cs.logFatalMessage(currentFile(), currentLine(), "Release brake fail")
         sys.exit(1)
-    logInfoMessage(currentFile(), currentLine(), "Brake released")
+    cs.logInfoMessage(currentFile(), currentLine(), "Brake released")
 
-    config = EliteDriverConfig()
+    config = cs.EliteDriverConfig()
     config.robot_ip = ip
     config.local_ip = local_ip
     config.servoj_time = 0.004
@@ -92,24 +88,24 @@ def main():
     config.script_file_path = get_package_installation_path("elite_cs_sdk") + "/external_control.script"
     config.headless_mode = args.use_headless_mode.lower() == "true"
 
-    driver = EliteDriver(config)
+    driver = cs.EliteDriver(config)
     # Wait 
     time.sleep(1)
 
     if config.headless_mode:
         if not driver.isRobotConnected():
             if not driver.sendExternalControlScript():
-                logFatalMessage(currentFile(), currentLine(), "Fail to send external control script")
+                cs.logFatalMessage(currentFile(), currentLine(), "Fail to send external control script")
                 sys.exit(1)
     else:
         if not dashboard.playProgram():
-            logFatalMessage(currentFile(), currentLine(), "Fail to play program")
+            cs.logFatalMessage(currentFile(), currentLine(), "Fail to play program")
             sys.exit(1)
 
-    logInfoMessage(currentFile(), currentLine(), "Waitting for robot connecting")
+    cs.logInfoMessage(currentFile(), currentLine(), "Waitting for robot connecting")
     while not driver.isRobotConnected():
         time.sleep(0.01)
-    logInfoMessage(currentFile(), currentLine(), "External control script is running")
+    cs.logInfoMessage(currentFile(), currentLine(), "External control script is running")
 
     # Wait 
     time.sleep(1)
@@ -127,7 +123,7 @@ def main():
     
 if __name__ == "__main__":
     try:
-        setCurrentThreadFiFoScheduling(getThreadFiFoMaxPriority())
+        cs.setCurrentThreadFiFoScheduling(cs.getThreadFiFoMaxPriority())
         main()
     except Exception as e:
         print(f"[ERROR] {e}", file=sys.stderr)
