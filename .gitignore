@@ -2,3 +2,4 @@ build
 .vscode
 dist/
 log/
+.DS_Store
