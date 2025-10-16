@@ -528,7 +528,7 @@ def getActualJointTemperatures() -> list
 
 ### 获取实际TCP位姿
 ```py
-def getAcutalTpyose() -> list
+def getActualTCPPose() -> list
 ```
 - ***功能***
 
@@ -540,7 +540,7 @@ def getAcutalTpyose() -> list
 
 ### 获取实际TCP速度
 ```py
-def getAcutalTCPVelocity() -> list
+def getActualTCPVelocity() -> list
 ```
 - ***功能***
 
@@ -552,7 +552,7 @@ def getAcutalTCPVelocity() -> list
 
 ### 获取实际TCP力
 ```py
-def getAcutalTCPForce() -> list
+def getActualTCPForce() -> list
 ```
 - ***功能***
 

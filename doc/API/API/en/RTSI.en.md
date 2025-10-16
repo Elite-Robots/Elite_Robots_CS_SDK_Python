@@ -533,7 +533,7 @@ def getActualJointTemperatures() -> list
 
 ### Get Actual TCP Pose
 ```py
-def getAcutalTpyose() -> list
+def getActualTpyose() -> list
 ```
 - ***Function***
 
@@ -545,7 +545,7 @@ def getAcutalTpyose() -> list
 
 ### Get Actual TCP Velocity
 ```py
-def getAcutalTCPVelocity() -> list
+def getActualTCPVelocity() -> list
 ```
 - ***Function***
 
@@ -557,7 +557,7 @@ def getAcutalTCPVelocity() -> list
 
 ### Get Actual TCP Force
 ```py
-def getAcutalTCPForce() -> list
+def getActualTCPForce() -> list
 ```
 - ***Function***
 

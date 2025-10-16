@@ -183,8 +183,8 @@ def main():
     positive_rotation = False
     negative_rotation = False
 
-    acutal_joint = rtsi.getActualJointPositions()
-    target_joint = acutal_joint
+    actual_joint = rtsi.getActualJointPositions()
+    target_joint = actual_joint
 
     JOINT_FINAL_TARGET = 3.0
     
