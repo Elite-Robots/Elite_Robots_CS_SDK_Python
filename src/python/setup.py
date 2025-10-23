@@ -8,7 +8,7 @@ setup(
     packages=find_packages(where='package'),
     include_package_data=True,
     package_data={
-        'elite_cs_sdk': ['*.so', '*.script', '*.pyi', '*.dll', '*.lib', '*.pyd']
+        'elite_cs_sdk': ['*.so', '*.script', '*.pyi', '*.dll', '*.lib', '*.pyd', '*.dylib']
     },
     install_requires=[],
     zip_safe=False,
