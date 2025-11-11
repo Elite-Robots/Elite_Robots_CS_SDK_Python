@@ -40,7 +40,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
           "$<TARGET_FILE_DIR:elite-cs-series-sdk_SHARED>"
           "${PKG_BUILD_DIR}/package/elite_cs_sdk/"
     )
-elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR APPLE)
     add_custom_command(TARGET copy_python_requirements POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E remove_directory ${PKG_BUILD_DIR}
         COMMAND ${CMAKE_COMMAND} -E make_directory ${PKG_BUILD_DIR}/package
@@ -82,7 +82,7 @@ add_custom_target(generate_sdk_pyi
         ${Python3_EXECUTABLE} -m pybind11_stubgen elite_cs_sdk_python
         --output-dir ${PKG_BUILD_DIR}/package/elite_cs_sdk
         --ignore-invalid-expressions ELITE:: # TODO: Remove this ignore flag.
-        
+
     COMMENT "Generating .pyi files using pybind11-stubgen"
     WORKING_DIRECTORY ${PKG_BUILD_DIR}
     USES_TERMINAL

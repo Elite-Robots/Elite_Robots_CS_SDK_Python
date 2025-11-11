@@ -29,10 +29,12 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(pybind11)
 
+# --- MODIFIED: Added PATCH_COMMAND to apply our fixes after download ---
 FetchContent_Declare(
   elite_cs_sdk
   GIT_REPOSITORY ${ELITE_CS_SDK_REPO}
   GIT_TAG main
+  PATCH_COMMAND git apply "${CMAKE_SOURCE_DIR}/macos_fixes.patch"
 )
 FetchContent_MakeAvailable(elite_cs_sdk)
 
@@ -61,17 +63,24 @@ target_link_libraries(elite_cs_sdk_python PRIVATE elite-cs-series-sdk_SHARED)
 
 add_dependencies(elite_cs_sdk_python elite-cs-series-sdk_SHARED)
 
+# --- MODIFIED: Correctly handle suffixes and RPATH for macOS ---
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   set(ELITE_PY_SDK_SUFFIX ".pyd")
-else()
+  set(ELITE_INSTALL_RPATH "") # No RPATH on Windows
+elseif(APPLE)
   set(ELITE_PY_SDK_SUFFIX ".so")
+  # Use @loader_path for macOS RPATH, so the .so can find the .dylib
+  set(ELITE_INSTALL_RPATH "@loader_path")
+else() # Linux
+  set(ELITE_PY_SDK_SUFFIX ".so")
+  set(ELITE_INSTALL_RPATH "$ORIGIN")
 endif()
 
 set_target_properties(elite_cs_sdk_python PROPERTIES
   CXX_STANDARD 17
   CXX_STANDARD_REQUIRED YES
   BUILD_WITH_INSTALL_RPATH TRUE
-  INSTALL_RPATH "$ORIGIN"
+  INSTALL_RPATH "${ELITE_INSTALL_RPATH}"
   OUTPUT_NAME "elite_cs_sdk_python"
   SUFFIX "${ELITE_PY_SDK_SUFFIX}"
 )
