@@ -22,6 +22,17 @@ else()
   set(PYBIND11_REPO "https://github.com/pybind/pybind11.git")
 endif()
 
+# Check for macOS patch file and set PATCH_COMMAND accordingly
+set(MACOS_FIX_PATCH "${CMAKE_SOURCE_DIR}/macos_fixes.patch")
+if(EXISTS "${MACOS_FIX_PATCH}")
+  message(STATUS "Applying macOS fixes patch: ${MACOS_FIX_PATCH}")
+  set(ELITE_SDK_PATCH_CMD git apply "${MACOS_FIX_PATCH}")
+else()
+  message(STATUS "macos_fixes.patch not found, skipping patch step.")
+  set(ELITE_SDK_PATCH_CMD "")
+endif()
+
+
 FetchContent_Declare(
   pybind11
   GIT_REPOSITORY ${PYBIND11_REPO}
@@ -29,12 +40,11 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(pybind11)
 
-# --- MODIFIED: Added PATCH_COMMAND to apply our fixes after download ---
 FetchContent_Declare(
   elite_cs_sdk
   GIT_REPOSITORY ${ELITE_CS_SDK_REPO}
   GIT_TAG main
-  PATCH_COMMAND git apply "${CMAKE_SOURCE_DIR}/macos_fixes.patch"
+  PATCH_COMMAND ${ELITE_SDK_PATCH_CMD}
 )
 FetchContent_MakeAvailable(elite_cs_sdk)
 
