@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2025, Elite Robots.
 #include "ControllerLogWrapper.hpp"
 #include <pybind11/functional.h>
 #include "Elite/ControllerLog.hpp"
