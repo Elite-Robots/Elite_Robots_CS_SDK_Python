@@ -73,7 +73,7 @@ target_link_libraries(elite_cs_sdk_python PRIVATE elite-cs-series-sdk_SHARED)
 
 add_dependencies(elite_cs_sdk_python elite-cs-series-sdk_SHARED)
 
-# --- MODIFIED: Correctly handle suffixes and RPATH for macOS ---
+# Correctly handle suffixes and RPATH for macOS
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   set(ELITE_PY_SDK_SUFFIX ".pyd")
   set(ELITE_INSTALL_RPATH "") # No RPATH on Windows

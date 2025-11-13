@@ -44,7 +44,9 @@ from .elite_cs_sdk_python import (
     RtsiRecipe,
     upgradeControlSoftware,
     VersionInfo,
-    SDK_VERSION_INFO
+    SDK_VERSION_INFO,
+    SerialConfig,
+    SerialCommunication,
 )
 
 __all__ = [
@@ -94,4 +96,6 @@ __all__ = [
     'upgradeControlSoftware',
     'VersionInfo',
     'SDK_VERSION_INFO',
+    "SerialConfig",
+    "SerialCommunication",
 ]

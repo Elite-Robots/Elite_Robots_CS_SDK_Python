@@ -324,7 +324,7 @@ def primaryReconnect() -> bool
 ---
 
 ### ***注册机器人异常回调***
-```cpp
+```py
 def registerRobotExceptionCallback(cb: Callable[[RobotExceptionSharedPtr]])
 ```
 
@@ -333,5 +333,67 @@ def registerRobotExceptionCallback(cb: Callable[[RobotExceptionSharedPtr]])
 
 - ***参数***
     - registerRobotExceptionCallback: 回调函数，用于处理接收到的机器人异常。参数为机器人异常的共享指针(参考：[RobotException](./RobotException.cn.md))。
-    
 
+---
+
+### ***启用工具RS485通讯***
+```py
+def startToolRs485(config: SerialConfig, tcp_port = 54321) -> SerialCommunication
+```
+
+- ***功能***
+    启用工具RS485通讯。此接口会在机器人控制器上启动一个 socat 进程，将工具RS485串口的数据转发到指定的 TCP/IP 端口。
+
+- ***参数***
+    - config：串口配置。详情可查看：[串口通讯](./SerialCommunication.cn.md)
+    - tcp_port：TCP 端口。
+
+- ***返回值***：一个可以操作串口的对象，其本质是一个 TCP 客户端。详情可查看：[串口通讯](./SerialCommunication.cn.md)
+
+---
+
+### ***停止工具RS485通讯***
+```py
+def endToolRs485(comm: SerialCommunication) -> bool
+```
+
+- ***功能***
+    停止工具RS485通讯。
+
+- ***参数***
+    - comm：如果不为`None`，会调用`SerialCommunication.disconnect()`方法。详情可查看：[串口通讯](./SerialCommunication.cn.md)
+
+- ***返回值***：成功停止工具RS485通讯。
+
+---
+
+### ***启用工具RS485通讯***
+```py
+def startBoardRs485(config: SerialConfig, tcp_port = 54321) -> SerialCommunication
+```
+
+- ***功能***
+    启用控制柜RS485通讯。此接口会在机器人控制器上启动一个 socat 进程，将控制柜RS485串口的数据转发到指定的 TCP/IP 端口。
+
+- ***参数***
+    - config：串口配置。详情可查看：[串口通讯](./SerialCommunication.cn.md)
+    - tcp_port：TCP 端口。
+
+- ***返回值***：一个可以操作串口的对象，其本质是一个 TCP 客户端。详情可查看：[串口通讯](./SerialCommunication.cn.md)
+
+---
+
+### ***停止工具RS485通讯***
+```py
+def endBoardRs485(comm: SerialCommunication) -> bool
+```
+
+- ***功能***
+    停止控制柜RS485通讯。
+
+- ***参数***
+    - comm_ptr：如果不为`None`，会调用`SerialCommunication.disconnect()`方法。详情可查看：[串口通讯](./SerialCommunication.cn.md)
+
+- ***返回值***：成功停止主板RS485通讯。
+
+---
