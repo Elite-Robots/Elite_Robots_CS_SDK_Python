@@ -284,3 +284,67 @@ def registerRobotExceptionCallback(cb: Callable[[RobotExceptionSharedPtr]])
 
 - ***Parameters***
     - `cb`: The callback function to handle received robot exceptions. The parameter is a shared pointer to a robot exception (see: [RobotException](./RobotException.en.md)).
+
+---
+
+### ***Enable Tool RS485 Communication***
+```py
+def startToolRs485(config: SerialConfig, tcp_port = 54321) -> SerialCommunication
+```
+
+- ***Description***  
+    Enables tool RS485 communication. This interface launches a socat process on the robot controller to forward data from the tool RS485 serial port to the specified TCP/IP port.
+
+- ***Parameters***
+    - `config`: Serial port configuration.
+    - `tcp_port`: TCP port.
+
+- ***Return Value***: An object for operating the serial port, which essentially functions as a TCP client. See [serial communication](./SerialCommunication.en.md).
+
+---
+
+### ***Disable Tool RS485 Communication***
+```py
+def endToolRs485(comm: SerialCommunication) -> bool
+```
+
+- ***Description***  
+    Disables tool RS485 communication.
+
+- ***Parameters***
+    - `comm`: If not `None`, the `SerialCommunication.disconnect()` method will be called. See [serial communication](./SerialCommunication.en.md).
+
+- ***Return Value***: Indicates whether the tool RS485 communication was successfully disabled.
+
+---
+
+### ***Enable Control Cabinet RS485 Communication***
+```py
+def startBoardRs485(config: SerialConfig, tcp_port = 54321) -> SerialCommunication
+```
+
+- ***Description***  
+    Enables control cabinet RS485 communication. This interface launches a socat process on the robot controller to forward data from the control cabinet RS485 serial port to the specified TCP/IP port.
+
+- ***Parameters***
+    - `config`: Serial port configuration.
+    - `tcp_port`: TCP port.
+
+- ***Return Value***: An object for operating the serial port, which essentially functions as a TCP client. See [serial communication](./SerialCommunication.en.md).
+
+---
+
+### ***Disable Control Cabinet RS485 Communication***
+```py
+def endBoardRs485(comm: SerialCommunication) -> bool
+```
+
+- ***Description***  
+    Disables control cabinet RS485 communication.
+
+- ***Parameters***
+    - `comm`: If not `None`, the `SerialCommunication.disconnect()` method will be called. See [serial communication](./SerialCommunication.en.md).
+
+- ***Return Value***: Indicates whether the control cabinet RS485 communication was successfully disabled. See [serial communication](./SerialCommunication.en.md).
+
+---
