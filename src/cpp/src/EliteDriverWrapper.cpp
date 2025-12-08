@@ -282,46 +282,26 @@ static void bindEliteDriverClass(py::module_& m) {
                 Args:
                     cb (Callable[[RobotException], None]): A callback function that takes a RobotException representing the received exception.
             )doc")
-        .def("startToolRs485", &EliteDriver::startToolRs485, py::arg("config"), py::arg("tcp_port") = 54321,
+        .def("startToolRs485", &EliteDriver::startToolRs485, py::arg("config"), py::arg("ssh_password"), py::arg("tcp_port") = 54321,
              R"doc(
                 Start tool RS485 communication.
                 This function will start a socat process on the robot control cabinet, mapping the serial port to the TCP port you specified.
 
                 Args:
                     config (SerialConfig): Serial communication configuration
+                    ssh_password (str): SSH password for robot control cabinet
                     tcp_port (int): TCP port of the serial communication server
 
                 Returns:
                     SerialCommunication: A TCP communication object for RS485 communication. nullptr if start fail.
             )doc")
-        .def("endToolRs485", &EliteDriver::endToolRs485, py::arg("comm"),
+        .def("endToolRs485", &EliteDriver::endToolRs485, py::arg("com"), py::arg("ssh_password"),
              R"doc(
                 End tool RS485 communication
 
                 Args:
-                    comm (SerialCommunication): TCP communication object for RS485 communication. If not None, it will be disconnected.
-
-                Returns:
-                    bool: True if success
-            )doc")
-        .def("startBoardRs485", &EliteDriver::startBoardRs485, py::arg("config"), py::arg("tcp_port") = 54322,
-             R"doc(
-                Start board RS485 communication.
-                This function will start a socat process on the robot control cabinet, mapping the serial port to the TCP port you specified.
-
-                Args:
-                    config (SerialConfig): Serial communication configuration
-                    tcp_port (int): TCP port of the serial communication server
-
-                Returns:
-                    SerialCommunication: A TCP communication object for RS485 communication. None if start fail.
-            )doc")
-        .def("endBoardRs485", &EliteDriver::endBoardRs485, py::arg("comm"),
-             R"doc(
-                End board RS485 communication
-
-                Args:
-                    comm (SerialCommunication): TCP communication object for RS485 communication. If not None, it will be disconnected.
+                    com (SerialCommunication): TCP communication object for RS485 communication. If not None, it will be disconnected.
+                    ssh_password (str): SSH password for robot control cabinet
 
                 Returns:
                     bool: True if success

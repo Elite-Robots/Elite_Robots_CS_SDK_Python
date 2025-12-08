@@ -39,10 +39,9 @@ def main():
         help="IP address of the robot's server"
     )
     parser.add_argument(
-        "--which_serial",
+        "--ssh_pw",
         required=True,
-        choices=["board", "tool"],
-        help="Choose which serial."
+        help="Controller box OS ssh password."
     )
     args = parser.parse_args()
 
@@ -103,10 +102,7 @@ def main():
     serial_config.parity = cs.SerialConfig.Parity.NONE
     serial_config.stop_bits = cs.SerialConfig.StopBits.ONE
 
-    if args.which_serial == "tool":
-        serial = driver.startToolRs485(serial_config)
-    elif args.which_serial == "board":
-        serial = driver.startBoardRs485(serial_config)
+    serial = driver.startToolRs485(serial_config, args.ssh_pw)
 
     cs.logInfoMessage(currentFile(), currentLine(), "Connecting to serial...")
     if not serial.connect(1000):
@@ -126,8 +122,7 @@ def main():
     cs.logInfoMessage(currentFile(), currentLine(), f"Successfully read from serial: {read_data}")
 
     cs.logInfoMessage(currentFile(), currentLine(), "Ending serial...")
-    driver.endBoardRs485(serial)
-    driver.endToolRs485(serial)
+    driver.endToolRs485(serial, args.ssh_pw)
     driver.stopControl()
     cs.logInfoMessage(currentFile(), currentLine(), "Serial ended")
 
