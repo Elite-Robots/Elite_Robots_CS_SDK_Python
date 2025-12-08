@@ -1,12 +1,58 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2025, Elite Robots.
 #include "SerialCommunicationWrapper.hpp"
+#include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
 #include <Elite/SerialCommunication.hpp>
 #include <iostream>
 
 namespace py = pybind11;
 using namespace ELITE;
 
+class PySerialCommunication : public SerialCommunication {
+   public:
+    PySerialCommunication() = default;
+    ~PySerialCommunication() override = default;
+
+    bool connect(int timeout_ms) override { PYBIND11_OVERRIDE_PURE(bool, SerialCommunication, connect, timeout_ms); }
+
+    void disconnect() override { PYBIND11_OVERRIDE_PURE(void, SerialCommunication, disconnect, ); }
+
+    bool isConnected() override { PYBIND11_OVERRIDE_PURE(bool, SerialCommunication, isConnected, ); }
+
+    int getSocatPid() const override { PYBIND11_OVERRIDE_PURE(int, SerialCommunication, getSocatPid, ); }
+
+    // write: 把 buffer 转为 py::bytes 调用 python 的 write(bytes) -> int
+    int write(const uint8_t* data, size_t size) override {
+        py::gil_scoped_acquire gil;
+        py::object override = py::get_override(this, "write");
+        if (override) {
+            py::bytes b(reinterpret_cast<const char*>(data), size);
+            // Python side should implement write(bytes) -> int
+            return override(b).cast<int>();
+        }
+        // 若没有在 Python 中重载，则触发基类 pure virtual 行为（抛出）
+        throw std::runtime_error("Pure virtual function 'write' not overridden in Python");
+    }
+
+    // read: 调用 python 的 read(size, timeout_ms) -> bytes/None
+    int read(uint8_t* data, size_t size, int timeout_ms) override {
+        py::gil_scoped_acquire gil;
+        py::object override = py::get_override(this, "read");
+        if (override) {
+            py::object res = override(static_cast<int>(size), timeout_ms);
+            if (res.is_none()) return -1;
+            py::bytes b = res;
+            std::string s = static_cast<std::string>(b);
+            size_t copy_n = std::min(size, s.size());
+            if (copy_n > 0) std::memcpy(data, s.data(), copy_n);
+            return static_cast<int>(copy_n);
+        }
+        throw std::runtime_error("Pure virtual function 'write' not overridden in Python");
+    }
+};
+
+// SerialConfig binding (保持你现有)
 void bindSerialConfig(py::module_& m) {
     py::class_<SerialConfig>(m, "SerialConfig")
         .def(py::init<>())
@@ -40,63 +86,39 @@ void bindSerialConfig(py::module_& m) {
 }
 
 void bindSerialCommunication(pybind11::module_& m) {
-    py::class_<SerialCommunication, SerialCommunicationSharedPtr>(m, "SerialCommunication")
-        .def(py::init<const std::string&, int>(), py::arg("ip"), py::arg("port"),
-            R"doc(
-                Construct a new Serial Communication object.
-
-                Args:
-                    ip (str): The IP address of the serial communication server.
-                    port (int): The port number of the serial communication server.
-            )doc")
+    // 注意：基类绑定要带上 trampoline 类型并且不要绑定构造函数（因为它是抽象的）
+    py::class_<SerialCommunication, PySerialCommunication, std::shared_ptr<SerialCommunication>>(m, "SerialCommunication")
         .def("connect", &SerialCommunication::connect,
-            R"doc(
+             R"doc(
                 Connect to the RS485 TCP server.
 
                 Returns:
                     bool: True if connected successfully, False otherwise.
             )doc")
-        .def("disconnect", &SerialCommunication::disconnect,
-            R"doc(
-                Disconnect from the RS485 TCP server.
-            )doc")
-        .def("isConnected", &SerialCommunication::isConnected,
-            R"doc(
-                Check if the connection to the RS485 TCP server is established.
-                Returns:
-                    bool: True if connected, False otherwise.
-            )doc")
-        .def("write", [](SerialCommunication& sc, py::bytes& data) {
-                std::string data_str = data;
-                return sc.write(reinterpret_cast<const uint8_t*>(data_str.data()), static_cast<int>(data_str.size()));
-            }, 
-            py::arg("data"),
-            R"doc(
-                Write data to the RS485 TCP server.
-
-                Args:
-                    data (bytes): The data to be sent.
-                Returns:
-                    int: The number of bytes written.
-            )doc")
-        .def("read",
-            [](SerialCommunication& sc, int size, int timeout_ms){
-                std::vector<uint8_t> buffer(size);
-                int read_len = sc.read(buffer.data(), size, timeout_ms);
-                if (read_len <= 0) {
-                    return py::bytes();
-                } else {
-                    return py::bytes(reinterpret_cast<const char*>(buffer.data()), read_len);
-                }
+        .def("disconnect", &SerialCommunication::disconnect, R"doc(Disconnect from the RS485 TCP server.)doc")
+        .def("isConnected", &SerialCommunication::isConnected, R"doc(Check connection status.)doc")
+        // write: expose as bytes -> int in Python
+        .def(
+            "write",
+            [](SerialCommunication& sc, py::bytes data) {
+                std::string s = static_cast<std::string>(data);
+                return sc.write(reinterpret_cast<const uint8_t*>(s.data()), s.size());
             },
-            py::arg("size"), py::arg("timeout_ms"),
-            R"doc(
-                Read data from the RS485 TCP server.
-
-                Args:
-                    size (int): The size of the data to be read.
-                    timeout_ms (int): The read timeout in milliseconds.
-                Returns:
-                    bytes: The data read from the server.
-            )doc");
+            py::arg("data"))
+        // read: expose as (size:int, timeout_ms:int) -> bytes
+        .def(
+            "read",
+            [](SerialCommunication& sc, int size, int timeout_ms) {
+                if (size <= 0) {
+                    return py::bytes();
+                }
+                std::vector<uint8_t> buf(static_cast<size_t>(size));
+                int n = sc.read(buf.data(), buf.size(), timeout_ms);
+                if (n <= 0) {
+                    return py::bytes();
+                }
+                return py::bytes(reinterpret_cast<char*>(buf.data()), n);
+            },
+            py::arg("size"), py::arg("timeout_ms"))
+        .def("getSocatPid", &SerialCommunication::getSocatPid);
 }
