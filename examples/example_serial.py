@@ -1,9 +1,9 @@
 import elite_cs_sdk as cs
+
 import inspect
 import os
 import argparse
 import sys
-import math
 import time
 
 def get_package_installation_path(package_name):
@@ -39,19 +39,13 @@ def main():
         help="IP address of the robot's server"
     )
     parser.add_argument(
-        "--max_speed",
-        default = 2.0,
-        help="Max joint speed rad/s"
-    )
-    parser.add_argument(
-        "--max_acc",
-        default = 2.0,
-        help="Max joint acc rad/s^2"
+        "--ssh_pw",
+        required=True,
+        help="Controller box OS ssh password."
     )
     args = parser.parse_args()
 
     ip, local_ip = args.ip, args.local_ip
-    max_speed, max_acc = float(args.max_speed), float(args.max_acc)
 
     """
     Dashboard connect and enable robot
@@ -81,9 +75,6 @@ def main():
     config = cs.EliteDriverConfig()
     config.robot_ip = ip
     config.local_ip = local_ip
-    config.servoj_time = 0.004
-    config.servoj_gain = 2000
-    config.servoj_lookahead_time = 0.3
     config.script_file_path = get_package_installation_path("elite_cs_sdk") + "/external_control.script"
     config.headless_mode = args.use_headless_mode.lower() == "true"
 
@@ -106,24 +97,34 @@ def main():
         time.sleep(0.01)
     cs.logInfoMessage(currentFile(), currentLine(), "External control script is running")
 
-    # Wait 
-    time.sleep(1)
+    serial_config = cs.SerialConfig()
+    serial_config.baud_rate = cs.SerialConfig.BaudRate.BR_115200
+    serial_config.parity = cs.SerialConfig.Parity.NONE
+    serial_config.stop_bits = cs.SerialConfig.StopBits.ONE
 
-    speedl_vector = [0, 0, -0.02, 0, 0, 0]
-    driver.writeSpeedl(speedl_vector, -1)
-    time.sleep(5)
+    serial = driver.startToolRs485(serial_config, args.ssh_pw)
 
-    speedl_vector = [0, 0, 0.02, 0, 0, 0]
-    driver.writeSpeedl(speedl_vector, -1)
-    time.sleep(5)
-    
-    driver.stopControl()
-
-    
-if __name__ == "__main__":
-    try:
-        cs.setCurrentThreadFiFoScheduling(cs.getThreadFiFoMaxPriority())
-        main()
-    except Exception as e:
-        print(f"[ERROR] {e}", file=sys.stderr)
+    cs.logInfoMessage(currentFile(), currentLine(), "Connecting to serial...")
+    if not serial.connect(1000):
+        cs.logFatalMessage(currentFile(), currentLine(), "Failed to connect serial")
         sys.exit(1)
+    cs.logInfoMessage(currentFile(), currentLine(), "Successfully connected to serial")
+
+    cs.logInfoMessage(currentFile(), currentLine(), "Writing to serial...")
+    hello_message = b'hello wrold'
+    if serial.write(hello_message) <= 0:
+        cs.logFatalMessage(currentFile(), currentLine(), "Failed to write to serial")
+        sys.exit(1)
+    cs.logInfoMessage(currentFile(), currentLine(), f"Successfully wrote to serial: {hello_message}")
+
+    cs.logInfoMessage(currentFile(), currentLine(), "Reading from serial...")
+    read_data = serial.read(64, 5000)
+    cs.logInfoMessage(currentFile(), currentLine(), f"Successfully read from serial: {read_data}")
+
+    cs.logInfoMessage(currentFile(), currentLine(), "Ending serial...")
+    driver.endToolRs485(serial, args.ssh_pw)
+    driver.stopControl()
+    cs.logInfoMessage(currentFile(), currentLine(), "Serial ended")
+
+if __name__ == "__main__":
+    main()

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2025, Elite Robots.
 #include "RobotExceptionWrapper.hpp"
 #include "Elite/RobotException.hpp"
 

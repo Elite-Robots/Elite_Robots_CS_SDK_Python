@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2025, Elite Robots.
 #include "ControllerLogWrapper.hpp"
 #include "DashboardClientWrapper.hpp"
 #include "DataTypeWrapper.hpp"
@@ -13,6 +15,7 @@
 #include "RtsiIOInterfaceWrapper.hpp"
 #include "RtsiRecipeWrapper.hpp"
 #include "VersionInfoWrapper.hpp"
+#include "SerialCommunicationWrapper.hpp"
 
 #include <pybind11/pybind11.h>
 
@@ -87,4 +90,6 @@ PYBIND11_MODULE(elite_cs_sdk_python, m) {
     bindRobotConfPackage(m);
     bindControllerLog(m);
     bindRtUtils(m);
+    bindSerialConfig(m);
+    bindSerialCommunication(m);
 }

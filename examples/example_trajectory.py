@@ -175,7 +175,7 @@ def main():
         cs.logFatalMessage(currentFile(), currentLine(), "Failed to move joints to target.");
         sys.exit(1)
     
-    target_pose = rtsi.getAcutalTCPPose()
+    target_pose = rtsi.getActualTCPPose()
 
     target_pose[2] -= 0.2
     trajectory = [target_pose.copy()]

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2025, Elite Robots.
 #include <Elite/DataType.hpp>
 #include <Elite/RtsiIOInterface.hpp>
 
@@ -195,21 +197,21 @@ void bindRtsiIOInterface(pybind11::module_ &m) {
                 Returns:
                     vector6d_t: Actual joint temperatures. Unit is Celsius degrees.
             )doc")
-        .def("getAcutalTCPPose", &RtsiIOInterface::getAcutalTCPPose,
+        .def("getActualTCPPose", &RtsiIOInterface::getActualTCPPose,
              R"doc(
                 Get the actual TCP pose.
 
                 Returns:
                     vector6d_t: Actual TCP pose. Unit is [m, m, m, rad, rad, rad].
             )doc")
-        .def("getAcutalTCPVelocity", &RtsiIOInterface::getAcutalTCPVelocity,
+        .def("getActualTCPVelocity", &RtsiIOInterface::getActualTCPVelocity,
              R"doc(
                 Get the actual TCP velocity.
 
                 Returns:
                     vector6d_t: Actual TCP velocity. Unit is [m/s, m/s, m/s, rad/s, rad/s, rad/s].
             )doc")
-        .def("getAcutalTCPForce", &RtsiIOInterface::getAcutalTCPForce,
+        .def("getActualTCPForce", &RtsiIOInterface::getActualTCPForce,
              R"doc(
                 Get the actual TCP force.
 

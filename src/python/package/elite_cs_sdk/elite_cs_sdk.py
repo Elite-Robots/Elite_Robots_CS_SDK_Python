@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2025, Elite Robots.
 from .elite_cs_sdk_python import (
     EliteDriver, 
     EliteDriverConfig,
@@ -44,7 +46,9 @@ from .elite_cs_sdk_python import (
     RtsiRecipe,
     upgradeControlSoftware,
     VersionInfo,
-    SDK_VERSION_INFO
+    SDK_VERSION_INFO,
+    SerialConfig,
+    SerialCommunication,
 )
 
 __all__ = [
@@ -94,4 +98,6 @@ __all__ = [
     'upgradeControlSoftware',
     'VersionInfo',
     'SDK_VERSION_INFO',
+    "SerialConfig",
+    "SerialCommunication",
 ]
