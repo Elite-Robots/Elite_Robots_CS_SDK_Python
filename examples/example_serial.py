@@ -111,7 +111,7 @@ def main():
     cs.logInfoMessage(currentFile(), currentLine(), "Successfully connected to serial")
 
     cs.logInfoMessage(currentFile(), currentLine(), "Writing to serial...")
-    hello_message = b'hello wrold'
+    hello_message = b'hello world'
     if serial.write(hello_message) <= 0:
         cs.logFatalMessage(currentFile(), currentLine(), "Failed to write to serial")
         sys.exit(1)
