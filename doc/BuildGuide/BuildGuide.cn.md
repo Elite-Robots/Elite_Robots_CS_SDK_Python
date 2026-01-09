@@ -11,6 +11,9 @@ sudo apt install libboost-all-dev
 sudo apt install libssh-dev # 可选，建议安装，建议版本为0.9.6
 
 # sudo apt install sshpass #如果没安装 libssh-dev 则需要安装此指令
+```
+如果使用python虚拟环境安装请跳过此步：
+```bash
 python3 -m pip install --upgrade pip setuptools wheel build
 
 python3 -m pip install --user pybind11 pybind11_stubgen
@@ -34,7 +37,7 @@ python3 -m pip install --user pybind11 pybind11_stubgen
 .\vcpkg integrate install
 ```
 
-安装python打包的必须组件
+安装python打包的必须组件(如果使用python虚拟环境，请跳过此步)
 ```bash
 python3 -m pip install --upgrade pip setuptools wheel build
 
@@ -44,6 +47,7 @@ python3 -m pip install --user pybind11 pybind11_stubgen
 ## 编译与安装
 
 ### Ubuntu
+使用默认python环境安装
 ```bash
 cd <clone of this repository>
 
@@ -56,7 +60,34 @@ make
 pip install ../dist/elite_cs_sdk-*.whl
 ```
 
+如果使用虚拟环境(venv)
+```bash
+cd <clone of this repository>
+
+sudo apt update
+
+sudo apt install python3.xx-venv   ## xx为python版本号,xx>=3.8
+
+python3.xx -m venv .venvtest       ## .venvtest为虚拟库文件夹名称
+
+source .venvtest/bin/activate
+
+python3 -m pip install pyyaml jinja2 typeguard
+
+python3 -m pip install --upgrade pip setuptools wheel build
+
+python3 -m pip install pybind11 pybind11_stubgen
+
+mkdir build && cd build
+
+cmake ..
+
+make
+
+pip install ../dist/elite_cs_sdk-*.whl
+```
 ### Windows
+使用默认python环境安装
 ```bash
 cd <clone of this repository>
 
@@ -67,4 +98,9 @@ cmake ..
 cmake --build . --config Release
 
 pip install ../dist/elite_cs_sdk-*.whl
+```
+如果使用虚拟环境(venv)
+```bash
+
+同上
 ```
