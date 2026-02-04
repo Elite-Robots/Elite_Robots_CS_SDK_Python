@@ -4,6 +4,7 @@ project(Elite_CS_Python_Binding)
 
 set(PKG_BUILD_DIR "${CMAKE_BINARY_DIR}/python")
 set(PKG_SRC_DIR "${CMAKE_SOURCE_DIR}/src/python")
+set(ELITE_ROS2_BUILD FALSE)
 
 add_subdirectory(src/cpp)
 
@@ -35,9 +36,9 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
           "$<TARGET_FILE_DIR:elite_cs_sdk_python>"
           "${PKG_BUILD_DIR}/package/elite_cs_sdk/"
 
-        COMMAND ${CMAKE_COMMAND} -E echo "Copying all files from $<TARGET_FILE_DIR:elite-cs-series-sdk_SHARED> to ${PKG_BUILD_DIR}/package/elite_cs_sdk/"
+        COMMAND ${CMAKE_COMMAND} -E echo "Copying all files from $<TARGET_FILE_DIR:elite_cs_series_sdk_SHARED> to ${PKG_BUILD_DIR}/package/elite_cs_sdk/"
         COMMAND ${CMAKE_COMMAND} -E copy_directory
-          "$<TARGET_FILE_DIR:elite-cs-series-sdk_SHARED>"
+          "$<TARGET_FILE_DIR:elite_cs_series_sdk_SHARED>"
           "${PKG_BUILD_DIR}/package/elite_cs_sdk/"
     )
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR APPLE)
@@ -58,8 +59,8 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR APPLE)
         ${PKG_BUILD_DIR}/package/elite_cs_sdk/$<TARGET_FILE_NAME:elite_cs_sdk_python>
 
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        $<TARGET_FILE:elite-cs-series-sdk_SHARED>
-        ${PKG_BUILD_DIR}/package/elite_cs_sdk/$<TARGET_FILE_NAME:elite-cs-series-sdk_SHARED>
+        $<TARGET_FILE:elite_cs_series_sdk_SHARED>
+        ${PKG_BUILD_DIR}/package/elite_cs_sdk/$<TARGET_FILE_NAME:elite_cs_series_sdk_SHARED>
 )
 else()
     message(FATAL_ERROR "Unsupport operating system")

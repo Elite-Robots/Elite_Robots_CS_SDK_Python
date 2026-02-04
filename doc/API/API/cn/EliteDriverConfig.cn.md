@@ -79,22 +79,6 @@ class EliteDriverConfig:
     def servoj_lookahead_time(self, arg0: float) -> None:
         ...
     @property
-    def servoj_queue_pre_recv_size(self) -> int:
-        """
-        When using the `writeServoj()` and the `queue_mode` parameter is true, the timeout duration for the queue waiting for. (For detailed descriptions of the queue mode, please refer to the description of this interface in the API documentation.)
-        """
-    @servoj_queue_pre_recv_size.setter
-    def servoj_queue_pre_recv_size(self, arg0: int) -> None:
-        ...
-    @property
-    def servoj_queue_pre_recv_timeout(self) -> float:
-        """
-        When using the `writeServoj()` and the `queue_mode` parameter is true, the timeout duration for the queue waiting for. (For detailed descriptions of the queue mode, please refer to the description of this interface in the API documentation.)
-        """
-    @servoj_queue_pre_recv_timeout.setter
-    def servoj_queue_pre_recv_timeout(self, arg0: float) -> None:
-        ...
-    @property
     def servoj_time(self) -> float:
         """
         The duration of servoj motion.
@@ -175,12 +159,4 @@ class EliteDriverConfig:
 - stopj_acc
     - 类型：`float`
     - 描述：停止运动的加速度 (rad/s²)。
-
-- servoj_queue_pre_recv_size
-    - 类型：`int`
-    - 描述：使用`writeServoj()`接口以及`queue_mode`参数为`true`时，在开始运动前，队列里预先保存的点位数量。（关于队列模式可参考[writeServoj()](./EliteDriver.cn.md#控制关节位置)接口中关于`queue_mode`的描述）。
-
-- servoj_queue_pre_recv_timeout
-    - 类型：`float`
-    - 描述：使用`writeServoj()`接口以及`queue_mode`参数为`true`时，预存点位的队列等待的超时时间。小于等于0时，会依据 servoj_queue_pre_recv_size * servoj_time 来计算超时时间。（关于队列模式可参考[writeServoj()](./EliteDriver.cn.md#控制关节位置)接口中关于`queue_mode`的描述）。
 
