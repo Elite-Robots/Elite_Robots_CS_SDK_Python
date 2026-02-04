@@ -69,9 +69,9 @@ pybind11_add_module(elite_cs_sdk_python
   ${BINDING_SOURCES}
 )
 
-target_link_libraries(elite_cs_sdk_python PRIVATE elite-cs-series-sdk_SHARED)
+target_link_libraries(elite_cs_sdk_python PRIVATE elite_cs_series_sdk_SHARED)
 
-add_dependencies(elite_cs_sdk_python elite-cs-series-sdk_SHARED)
+add_dependencies(elite_cs_sdk_python elite_cs_series_sdk_SHARED)
 
 # Correctly handle suffixes and RPATH for macOS
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")

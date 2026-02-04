@@ -30,15 +30,7 @@ static void bindEliteDriverConfig(py::module_& m) {
         .def_readwrite("servoj_lookahead_time", &EliteDriverConfig::servoj_lookahead_time,
                        "Time [S], range [0.03,0.2] smoothens the trajectory with this lookahead time")
         .def_readwrite("servoj_gain", &EliteDriverConfig::servoj_gain, "Servo gain.")
-        .def_readwrite("stopj_acc", &EliteDriverConfig::stopj_acc, "Acceleration [rad/s^2]. The acceleration of stopj motion.")
-        .def_readwrite("servoj_queue_pre_recv_size", &EliteDriverConfig::servoj_queue_pre_recv_size,
-                       "When using the `writeServoj()` and the `queue_mode` parameter is true, the timeout duration for the queue "
-                       "waiting for. (For detailed descriptions of the queue mode, please refer to the description of this "
-                       "interface in the API documentation.)")
-        .def_readwrite("servoj_queue_pre_recv_timeout", &EliteDriverConfig::servoj_queue_pre_recv_timeout,
-                       "When using the `writeServoj()` and the `queue_mode` parameter is true, the timeout duration for the queue "
-                       "waiting for. (For detailed descriptions of the queue mode, please refer to the description of this "
-                       "interface in the API documentation.)");
+        .def_readwrite("stopj_acc", &EliteDriverConfig::stopj_acc, "Acceleration [rad/s^2]. The acceleration of stopj motion.");
 }
 
 static void bindEliteDriverClass(py::module_& m) {
@@ -66,7 +58,6 @@ static void bindEliteDriverClass(py::module_& m) {
                     config (EliteDriverConfig): Configuration class for the EliteDriver. See it's code annotation for details.
             )doc")
         .def("writeServoj", &EliteDriver::writeServoj, py::arg("pos"), py::arg("timeout_ms"), py::arg("cartesian") = false,
-             py::arg("queue_mode") = false,
              R"doc(
                 Write servoj() points to robot
 
@@ -74,7 +65,6 @@ static void bindEliteDriverClass(py::module_& m) {
                     pos (list): points.
                     timeout_ms (int): The read timeout configuration for the reverse socket running in the external control script on the robot.
                     cartesian (bool): True if the point sent is cartesian, false if joint-based
-                    queue_mode (bool): True if use queue mode, false if normal mode. (For detailed descriptions of the queue mode, please refer to the description of this interface in the API documentation.)
                 Returns:
                     bool: True if send success
             )doc")

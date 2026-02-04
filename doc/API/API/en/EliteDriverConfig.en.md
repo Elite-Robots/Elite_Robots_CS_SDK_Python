@@ -79,22 +79,6 @@ class EliteDriverConfig:
     def servoj_lookahead_time(self, arg0: float) -> None:
         ...
     @property
-    def servoj_queue_pre_recv_size(self) -> int:
-        """
-        When using the `writeServoj()` and the `queue_mode` parameter is true, the timeout duration for the queue waiting for. (For detailed descriptions of the queue mode, please refer to the description of this interface in the API documentation.)
-        """
-    @servoj_queue_pre_recv_size.setter
-    def servoj_queue_pre_recv_size(self, arg0: int) -> None:
-        ...
-    @property
-    def servoj_queue_pre_recv_timeout(self) -> float:
-        """
-        When using the `writeServoj()` and the `queue_mode` parameter is true, the timeout duration for the queue waiting for. (For detailed descriptions of the queue mode, please refer to the description of this interface in the API documentation.)
-        """
-    @servoj_queue_pre_recv_timeout.setter
-    def servoj_queue_pre_recv_timeout(self, arg0: float) -> None:
-        ...
-    @property
     def servoj_time(self) -> float:
         """
         The duration of servoj motion.
@@ -174,11 +158,3 @@ This class serves as the configuration input when constructing the `EliteDriver`
 - `stopj_acc`
     - Type: `float`
     - Description: Acceleration for stopping motion (rad/s²).
-
-- servoj_queue_pre_recv_size
-    - Type: `int`
-    - Description: When using the `writeServoj()` interface with the `queue_mode` parameter set to `true`, this refers to the number of points pre-stored in the queue before motion starts. (For queue mode details, refer to the description of `queue_mode` in the [writeServoj()](./EliteDriver.en.md#control-joint-position) interface.)
-
-- servoj_queue_pre_recv_timeout
-    - Type: `float`
-    - Description:When using the `writeServoj()` interface with the `queue_mode` parameter set to `true`, the timeout duration for the queue waiting for pre-stored points. If the value is less than or equal to 0, the timeout duration will be calculated based on `servoj_queue_pre_recv_size * servoj_time`.(For queue mode details, refer to the description of `queue_mode` in the [writeServoj()](./EliteDriver.en.md#control-joint-position) interface.)
